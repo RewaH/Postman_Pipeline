@@ -1,0 +1,183 @@
+{
+	"info": {
+		"_postman_id": "402b2d22-0104-4bba-97d2-6daec84edc3c",
+		"name": "Petstore_Orders",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34906060"
+	},
+	"item": [
+		{
+			"name": "Retrieve_Pet_inventory_by_Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response body is in JSON format\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.property('inventory').that.is.an('object');",
+							"    pm.expect(responseData).to.have.property('quantity').that.is.a('number');",
+							"    pm.expect(responseData).to.have.property('status').that.is.a('string');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Inventory items are non-negative integers\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.not.be.empty;",
+							"    ",
+							"    Object.values(responseData).forEach(item => {",
+							"        pm.expect(item).to.be.a('number');",
+							"        pm.expect(item).to.be.at.least(0);",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response time is less than 2000ms\", function () {",
+							"    const responseTime=pm.environment.get(\"Demo\")",
+							"  pm.expect(pm.response.responseTime).to.be.below(responseTime);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const rt=2000;\r",
+							"pm.environment.set(\"Demo\",rt);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseURL}}store/inventory",
+					"host": [
+						"{{BaseURL}}store"
+					],
+					"path": [
+						"inventory"
+					]
+				},
+				"description": "\nThis endpoint makes an HTTP GET request to retrieve the current inventory of the store. The response of this request is a JSON schema representing the inventory data.\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Place_Order_for_Pet",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 0,\r\n  \"petId\": 0,\r\n  \"quantity\": 0,\r\n  \"shipDate\": \"2024-05-15T23:23:05.806Z\",\r\n  \"status\": \"placed\",\r\n  \"complete\": true\r\n}"
+				},
+				"url": {
+					"raw": "{{BaseURL}}store/order",
+					"host": [
+						"{{BaseURL}}store"
+					],
+					"path": [
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find_purshase_Order_by_ID",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseURL}}store/order/9223372036854775807",
+					"host": [
+						"{{BaseURL}}store"
+					],
+					"path": [
+						"order",
+						"9223372036854775807"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete_Order_by_ID",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseURL}}store/order/9223372036854775533",
+					"host": [
+						"{{BaseURL}}store"
+					],
+					"path": [
+						"order",
+						"9223372036854775533"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
